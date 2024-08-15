@@ -29,18 +29,17 @@ export default function App() {
     setLoader(true);
     const fetchData = async () => {
       try {
-        const { results, total, total_pages }: DataInterface = await getImages(
-          query,
-          page
-        );
+        const { results, total, total_pages } = await getImages(query, page);
         if (total === 0) {
           setIsEmpty(true);
           return;
         }
         setImages(prevState => [...prevState, ...results]);
         setLoadMore(page < total_pages);
-      } catch (error: any) {
-        setErrorMes(error.message);
+      } catch (error) {
+        if (error instanceof Error) {
+          setErrorMes(error.message);
+        }
       } finally {
         setLoader(false);
       }
