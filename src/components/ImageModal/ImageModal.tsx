@@ -1,7 +1,21 @@
 import Modal from 'react-modal';
+import { FC } from 'react';
+
 import css from './ImageModal.module.css';
 
-export default function ImageModal({ modalIsOpen, closeModal, src, alt }) {
+interface ImageModalProps {
+  src: string;
+  alt: string;
+  modalIsOpen: boolean;
+  closeModal: () => void;
+}
+
+const ImageModal: FC<ImageModalProps> = ({
+  modalIsOpen,
+  closeModal,
+  src,
+  alt,
+}) => {
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -14,4 +28,6 @@ export default function ImageModal({ modalIsOpen, closeModal, src, alt }) {
       <img src={src} alt={alt} className={css.img} />
     </Modal>
   );
-}
+};
+
+export default ImageModal;

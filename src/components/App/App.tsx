@@ -1,37 +1,45 @@
 import { useEffect, useState } from 'react';
+
+import { getImages } from '../apiService/images';
+import { ImageInterface, DataInterface, ModalInterface } from '../types';
+
 import SearchBar from '../SearchBar/SearchBar';
 import ImageGallery from '../ImageGallery/ImageGallery';
-import { getImages } from '../apiService/images';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import ImageModal from '../ImageModal/ImageModal';
 
 export default function App() {
-  const [query, setQuery] = useState('');
-  const [images, setImages] = useState([]);
-  const [page, setPage] = useState(1);
-  const [loader, setLoader] = useState(false);
-  const [errorMes, setErrorMes] = useState('');
-  const [loadMore, setLoadMore] = useState(false);
-  const [isEmpty, setIsEmpty] = useState(false);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [modalImage, setModalImage] = useState({});
+  const [query, setQuery] = useState<string>('');
+  const [images, setImages] = useState<ImageInterface[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [loader, setLoader] = useState<boolean>(false);
+  const [errorMes, setErrorMes] = useState<string>('');
+  const [loadMore, setLoadMore] = useState<boolean>(false);
+  const [isEmpty, setIsEmpty] = useState<boolean>(false);
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [modalImage, setModalImage] = useState<ModalInterface>({
+    src: '',
+    alt: '',
+  });
 
   useEffect(() => {
     if (!query) return;
     setLoader(true);
     const fetchData = async () => {
       try {
-        const { results, total, total_pages } = await getImages(query, page);
+        const { results, total, total_pages }: DataInterface = await getImages(
+          query,
+          page
+        );
         if (total === 0) {
           setIsEmpty(true);
           return;
         }
-
         setImages(prevState => [...prevState, ...results]);
         setLoadMore(page < total_pages);
-      } catch (error) {
+      } catch (error: any) {
         setErrorMes(error.message);
       } finally {
         setLoader(false);
@@ -41,7 +49,7 @@ export default function App() {
     fetchData();
   }, [query, page]);
 
-  const onSubmit = text => {
+  const onSubmit = (text: string): void => {
     setImages([]);
     setQuery(text);
     setPage(1);
@@ -50,16 +58,19 @@ export default function App() {
     setErrorMes('');
   };
 
-  const onLoadMore = () => {
+  const onLoadMore = (): void => {
     setPage(prevState => prevState + 1);
   };
 
-  const closeModal = () => {
+  const closeModal = (): void => {
     setModalIsOpen(false);
-    setModalImage({});
+    setModalImage({
+      src: '',
+      alt: '',
+    });
   };
 
-  const openModal = image => {
+  const openModal = (image: ModalInterface): void => {
     setModalIsOpen(true);
     setModalImage(image);
   };

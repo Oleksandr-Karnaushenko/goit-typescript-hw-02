@@ -1,17 +1,23 @@
+import { FC, FormEvent } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import css from './SearchBar.module.css';
 import { CiSearch } from 'react-icons/ci';
 
-export default function SearchBar({ onSubmit }) {
-  const handleSubmit = e => {
-    const query = e.target.elements.input.value.trim();
+import css from './SearchBar.module.css';
+
+interface SearchBarProps {
+  onSubmit: (text: string) => void;
+}
+
+const SearchBar: FC<SearchBarProps> = ({ onSubmit }) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const query: string = e.currentTarget.input.value.trim();
     e.preventDefault();
     if (query === '') {
       toast.error('Write some text');
       return;
     }
     onSubmit(query);
-    e.target.reset();
+    e.currentTarget.reset();
   };
 
   return (
@@ -34,4 +40,6 @@ export default function SearchBar({ onSubmit }) {
       </form>
     </header>
   );
-}
+};
+
+export default SearchBar;
